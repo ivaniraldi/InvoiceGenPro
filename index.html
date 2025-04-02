@@ -92,18 +92,18 @@
     <!-- App Header -->
     <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/30 border-b border-gray-200/30 shadow-sm">
         <div class="container mx-auto px-4">
-            <div class="flex items-center justify-between py-4">
+            <div class="flex items-center justify-between py-3 md:py-4">
                 <!-- Logo y título -->
-                <div class="flex items-center space-x-4">
-                    <img src="./logo-min.png" alt="InvoiceGen Pro Logo" class="h-16 w-auto">
-                    <h1 class="text-2xl font-bold text-black">InvoiceGen <span class="text-[#FFB22C] font-bold">Pro</span></h1>
+                <div class="flex items-center space-x-2 md:space-x-4">
+                    <img src="./logo-min.png" alt="InvoiceGen Pro Logo" class="h-10 w-auto sm:h-12 md:h-16">
+                    <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-black">InvoiceGen <span class="text-[#FFB22C] font-bold">Pro</span></h1>
                 </div>
 
                 <!-- Controles principales -->
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2 md:space-x-4">
                     <!-- Selector de idioma -->
                     <div class="relative">
-                        <select id="language-select" class="bg-transparent border border-gray-300 rounded-md pl-8 pr-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFB22C] focus:border-transparent appearance-none">
+                        <select id="language-select" class="bg-transparent border border-gray-300 rounded-md pl-6 sm:pl-8 pr-6 sm:pr-8 py-1 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#FFB22C] focus:border-transparent appearance-none">
                             <option value="es">🇪🇸 Español</option>
                             <option value="en">🇺🇸 English</option>
                             <option value="pt">🇧🇷 Português</option>
@@ -112,32 +112,34 @@
                             <i class="fas fa-chevron-down text-xs"></i>
                         </div>
                         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-2 text-gray-700">
-                            <i class="fas fa-globe"></i>
+                            <i class="fas fa-globe text-xs sm:text-sm"></i>
                         </div>
                     </div>
 
                     <!-- Botones de acción -->
-                    <div class="flex items-center space-x-3">
+                    <div class="flex items-center space-x-2 sm:space-x-3">
                         <div class="relative">
-                            <button id="generate-pdf-btn" class="bg-[#FFB22C] text-white font-medium py-2 px-4 rounded-md transition-all duration-200 flex items-center shadow-sm hover:bg-[#FFB22C]/90">
-                                <i class="fas fa-file-pdf mr-2"></i>
-                                <span data-translate="generate-pdf-btn">Generar PDF</span>
+                            <button id="generate-pdf-btn" class="bg-[#FFB22C] text-white font-medium py-1 sm:py-2 px-2 sm:px-4 rounded-md transition-all duration-200 flex items-center shadow-sm hover:bg-[#FFB22C]/90 text-xs sm:text-sm">
+                                <i class="fas fa-file-pdf mr-1 sm:mr-2"></i>
+                                <span data-translate="generate-pdf-btn" class="hidden sm:inline">Generar PDF</span>
+                                <span class="sm:hidden">PDF</span>
                             </button>
                             <!-- Menú desplegable para opciones de PDF -->
-                            <div id="pdf-options" class="absolute right-0 mt-2 w-48 bg-white/80 backdrop-blur-md rounded-md shadow-lg hidden z-10">
+                            <div id="pdf-options" class="absolute right-0 mt-2 w-40 sm:w-48 bg-white/80 backdrop-blur-md rounded-md shadow-lg hidden z-10">
                                 <div class="py-1">
-                                    <button id="download-pdf" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#F7F7F7] hover:text-[#854836] flex items-center">
+                                    <button id="download-pdf" class="w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-[#F7F7F7] hover:text-[#854836] flex items-center">
                                         <i class="fas fa-download mr-2"></i> <span data-translate="download-pdf-btn">Descargar PDF</span>
                                     </button>
-                                    <button id="print-pdf" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#F7F7F7] hover:text-[#854836] flex items-center">
+                                    <button id="print-pdf" class="w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-[#F7F7F7] hover:text-[#854836] flex items-center">
                                         <i class="fas fa-print mr-2"></i> <span data-translate="print-pdf-btn">Imprimir</span>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <button id="preview-btn" class="flex items-center px-4 py-2 text-sm font-medium text-white bg-[#FFB22C] rounded-md hover:bg-[#FFB22C]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FFB22C] shadow-sm">
-                            <i class="fas fa-eye mr-2"></i>
-                            <span data-translate="preview-btn">Vista Previa</span>
+                        <button id="preview-btn" class="flex items-center px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium text-white bg-[#FFB22C] rounded-md hover:bg-[#FFB22C]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FFB22C] shadow-sm">
+                            <i class="fas fa-eye mr-1 sm:mr-2"></i>
+                            <span data-translate="preview-btn" class="hidden sm:inline">Vista Previa</span>
+                            <span class="sm:hidden">Vista</span>
                         </button>
                     </div>
                 </div>
@@ -146,7 +148,7 @@
     </header>
 
     <!-- Espaciador para compensar el header fijo -->
-    <div class="h-20"></div>
+    <div class="h-16 sm:h-20"></div>
 
     <!-- App Introduction -->
     <div class="container mx-auto px-4 py-6">
