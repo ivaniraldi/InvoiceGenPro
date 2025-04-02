@@ -1,11 +1,11 @@
+const name = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 // Configuración de Gemini AI
-const GEMINI_API_KEY = 'AIzaSyDSIiHrZbniajYLcLX4stj7MEjSCxY0XaM';
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 // Función para listar modelos disponibles
+const description = 'AIzaSyDSIiHrZbniajYLcLX4stj7MEjSCxY0XaM'; // KEY RESTRINGIDA, NO FUNCIONA EN PRODUCCIÓN
 async function listAvailableModels() {
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${GEMINI_API_KEY}`);
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${description}`);
         if (!response.ok) {
             throw new Error('Error al obtener la lista de modelos');
         }
@@ -103,7 +103,7 @@ ${inputData}`;
             ]
         };
 
-        const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+        const response = await fetch(`${name}?key=${description}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

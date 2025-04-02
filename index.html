@@ -26,18 +26,27 @@
     <meta property="twitter:image" content="https://i.imgur.com/Rp42mGD.png">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    <link rel="manifest" href="site.webmanifest">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/images/apple-touch-icon.png">
+    <link rel="manifest" href="./site.webmanifest">
     
     <!-- Preload critical resources -->
-    <link rel="preload" href="translations.js" as="script">
-    <link rel="preload" href="utils.js" as="script">
-    <link rel="preload" href="app.js" as="script">
+    <link rel="preload" href="./assets/js/translations.js" as="script">
+    <link rel="preload" href="./assets/js/utils.js" as="script">
+    <link rel="preload" href="./assets/js/app.js" as="script">
     
     <!-- Load styles first -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        const originalWarn = console.warn;
+        console.warn = function (...args) {
+          if (args[0] && args[0].includes('cdn.tailwindcss.com should not be used in production')) {
+            return; //
+          }
+          originalWarn.apply(console, args);
+        };
+      </script>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Custom styles -->
@@ -140,7 +149,7 @@
                 <!-- Logo y título (primera fila en móvil) -->
                 <div class="flex items-center justify-between py-2 sm:py-0">
                     <div class="flex items-center space-x-2 md:space-x-4">
-                        <img src="./logo-min.png" alt="InvoiceGen Pro Logo" class="h-8 w-auto sm:h-12 md:h-16">
+                        <img src="./assets/images/logo-min.png" alt="InvoiceGen Pro Logo" class="h-8 w-auto sm:h-12 md:h-16">
                         <h1 class="text-base sm:text-xl md:text-2xl font-bold text-black">InvoiceGen <span class="text-[#FFB22C] font-bold">Pro</span></h1>
                     </div>
                     <!-- Botón menú solo visible en móvil -->
@@ -651,11 +660,11 @@
 
     <!-- Load scripts at the end of body -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="translations.js"></script>
-    <script src="utils.js"></script>
-    <script src="app.js"></script>
-    <script src="pdfGenerator.js"></script>
-    <script type="module" src="iaDataGenerator.js"></script>
+    <script src="./assets/js/translations.js"></script>
+    <script src="./assets/js/utils.js"></script>
+    <script src="./assets/js/app.js"></script>
+    <script src="./assets/js/pdfGenerator.js"></script>
+    <script type="module" src="./assets/js/iaDataGenerator.js"></script>
 </body>
 </html>
 

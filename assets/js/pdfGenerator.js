@@ -611,21 +611,44 @@
 
   // Función para imprimir el PDF
   function printPdf() {
-    // Mostrar el overlay de carga
     const loadingOverlay = document.getElementById("loading-overlay");
+    if (!loadingOverlay) {
+      showAlert('Error: No se encontró el elemento de carga');
+      return;
+    }
     loadingOverlay.classList.remove("hidden");
 
     try {
-      // Crear el contenido del PDF
-      const pdfContent = createPdfContent();
+      const invoiceData = collectInvoiceData();
+      if (!invoiceData) {
+        loadingOverlay.classList.add("hidden");
+        return;
+      }
 
-      // Configuración para html2pdf
+      const pdfContent = createPdfContent();
+      if (!pdfContent) {
+        loadingOverlay.classList.add("hidden");
+        return;
+      }
+
       const opt = {
-        margin: [10, 5, 10, 10],
-        filename: `factura-${document.getElementById("invoice-number").value}.pdf`,
+        margin: 0,
+        filename: `factura-${invoiceData.invoiceNum}.pdf`,
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        html2canvas: { 
+          scale: 2, 
+          useCORS: true,
+          logging: false,
+          letterRendering: true,
+          scrollX: 0,
+          scrollY: 0
+        },
+        jsPDF: { 
+          unit: "mm", 
+          format: "a4", 
+          orientation: "portrait",
+          compress: true
+        },
       };
 
       // Generar el PDF y abrirlo en una nueva ventana para imprimir
@@ -654,18 +677,18 @@
               }, 1000);
             };
           } else {
-            alert("Por favor, permita las ventanas emergentes para imprimir la factura.");
+            showAlert("Por favor, permita las ventanas emergentes para imprimir la factura.");
             loadingOverlay.classList.add("hidden");
           }
         })
         .catch((error) => {
           console.error("Error al generar el PDF para imprimir:", error);
-          alert("Hubo un error al generar el PDF para imprimir. Por favor, inténtelo de nuevo.");
+          showAlert("Hubo un error al generar el PDF para imprimir. Por favor, inténtelo de nuevo.");
           loadingOverlay.classList.add("hidden");
         });
     } catch (error) {
       console.error("Error al preparar el PDF para imprimir:", error);
-      alert("Hubo un error al preparar el PDF para imprimir. Por favor, inténtelo de nuevo.");
+      showAlert("Hubo un error al preparar el PDF para imprimir. Por favor, inténtelo de nuevo.");
       loadingOverlay.classList.add("hidden");
     }
   }
