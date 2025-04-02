@@ -142,6 +142,40 @@ function initializeApp() {
       })
     }
 
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+    
+    if (mobileMenuBtn && mobileMenu) {
+      // Inicialmente oculto en móvil
+      if (window.innerWidth < 640) {
+        mobileMenu.classList.add("hidden");
+      }
+      
+      mobileMenuBtn.addEventListener("click", function() {
+        mobileMenu.classList.toggle("hidden");
+      });
+      
+      // Ocultar menú al hacer clic en algún elemento o al cambiar el tamaño de la ventana
+      window.addEventListener("resize", function() {
+        if (window.innerWidth >= 640) {
+          mobileMenu.classList.remove("hidden");
+        } else if (!mobileMenu.classList.contains("hidden")) {
+          mobileMenu.classList.add("hidden");
+        }
+      });
+      
+      // Cerrar el menú al hacer clic en cualquier lugar fuera del menú
+      document.addEventListener("click", function(event) {
+        if (window.innerWidth < 640 && 
+            !mobileMenu.contains(event.target) && 
+            !mobileMenuBtn.contains(event.target) && 
+            !mobileMenu.classList.contains("hidden")) {
+          mobileMenu.classList.add("hidden");
+        }
+      });
+    }
+
     // Import data button
     const importDataBtn = document.getElementById("import-data-btn")
     if (importDataBtn) {
@@ -354,20 +388,23 @@ function initializeApp() {
     const row = document.createElement("tr")
     row.className = "item-row fade-in"
     row.innerHTML = `
-      <td class="px-6 py-4 whitespace-nowrap">
-        <input type="text" class="item-description block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition" data-translate="item-placeholder" placeholder="Descripción del artículo">
+      <td class="px-2 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
+        <input type="text" class="item-description block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition text-xs sm:text-base" data-translate="item-placeholder" placeholder="Descripción del artículo">
       </td>
-      <td class="px-6 py-4 whitespace-nowrap">
-        <input type="number" class="item-quantity block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition" min="1" value="1">
+      <td class="px-2 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
+        <input type="number" class="item-quantity block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition text-xs sm:text-base" min="1" value="1">
       </td>
-      <td class="px-6 py-4 whitespace-nowrap">
-        <input type="number" class="item-rate block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition" min="0" step="0.01" value="0.00" placeholder="0.00 ${symbol}">
+      <td class="px-2 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
+        <input type="number" class="item-rate block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition text-xs sm:text-base" min="0" step="0.01" value="0.00" placeholder="0.00 ${symbol}">
       </td>
-      <td class="px-6 py-4 whitespace-nowrap">
-        <span class="item-total">0.00 ${symbol}</span>
+      <td class="px-2 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
+        <span class="item-total text-xs sm:text-base">0.00 ${symbol}</span>
       </td>
-      <td class="px-6 py-4 whitespace-nowrap">
-        <button class="delete-btn text-red-600 hover:text-red-800" data-translate="delete-btn">Eliminar</button>
+      <td class="px-2 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-center">
+        <button class="delete-btn text-red-600 hover:text-red-800 text-xs sm:text-base">
+          <i class="fas fa-trash-alt"></i>
+          <span class="hidden sm:inline" data-translate="delete-btn">Eliminar</span>
+        </button>
       </td>
     `
 

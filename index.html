@@ -63,6 +63,34 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Mobile optimizations */
+        @media (max-width: 640px) {
+            input, select, textarea {
+                font-size: 16px !important; /* Prevent zoom on iOS */
+            }
+            
+            table {
+                font-size: 0.8rem;
+            }
+            
+            .table-responsive-container {
+                max-width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .sm-text-center {
+                text-align: center;
+            }
+            
+            /* Mejora para modales en móvil */
+            .mobile-bottom-sheet {
+                max-height: 90vh;
+                border-bottom-left-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+            }
+        }
         
         /* Custom scrollbar */
         ::-webkit-scrollbar {
@@ -82,6 +110,21 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #6a3a2b;
         }
+
+        /* Mejoras de accesibilidad para toques en móvil */
+        @media (max-width: 640px) {
+            button, 
+            a[role="button"],
+            select,
+            input[type="submit"] {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            input, textarea, select {
+                padding: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body class="bg-[#F7F7F7] min-h-screen">
@@ -91,55 +134,62 @@
     
     <!-- App Header -->
     <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/30 border-b border-gray-200/30 shadow-sm">
-        <div class="container mx-auto px-4">
-            <div class="flex items-center justify-between py-3 md:py-4">
-                <!-- Logo y título -->
-                <div class="flex items-center space-x-2 md:space-x-4">
-                    <img src="./logo-min.png" alt="InvoiceGen Pro Logo" class="h-10 w-auto sm:h-12 md:h-16">
-                    <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-black">InvoiceGen <span class="text-[#FFB22C] font-bold">Pro</span></h1>
+        <div class="container mx-auto px-2 sm:px-4">
+            <!-- En móvil: dos filas separadas -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between py-2 sm:py-4">
+                <!-- Logo y título (primera fila en móvil) -->
+                <div class="flex items-center justify-between py-2 sm:py-0">
+                    <div class="flex items-center space-x-2 md:space-x-4">
+                        <img src="./logo-min.png" alt="InvoiceGen Pro Logo" class="h-8 w-auto sm:h-12 md:h-16">
+                        <h1 class="text-base sm:text-xl md:text-2xl font-bold text-black">InvoiceGen <span class="text-[#FFB22C] font-bold">Pro</span></h1>
+                    </div>
+                    <!-- Botón menú solo visible en móvil -->
+                    <button id="mobile-menu-btn" class="sm:hidden text-[#854836] hover:text-[#FFB22C] focus:outline-none bg-white/80 p-2 rounded-full shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200/50">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
                 </div>
 
-                <!-- Controles principales -->
-                <div class="flex items-center space-x-2 md:space-x-4">
+                <!-- Controles principales (segunda fila en móvil) -->
+                <div id="mobile-menu" class="flex flex-col sm:flex-row items-center sm:space-x-4 space-y-2 sm:space-y-0 py-2 sm:py-0 border-t sm:border-t-0 border-gray-200/30 mt-2 sm:mt-0">
                     <!-- Selector de idioma -->
-                    <div class="relative">
-                        <select id="language-select" class="bg-transparent border border-gray-300 rounded-md pl-6 sm:pl-8 pr-6 sm:pr-8 py-1 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#FFB22C] focus:border-transparent appearance-none">
+                    <div class="relative w-full sm:w-auto">
+                        <select id="language-select" class="w-full sm:w-auto bg-white/80 border border-gray-300 rounded-full pl-10 pr-10 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#FFB22C] focus:border-[#FFB22C] appearance-none transition-all duration-300 backdrop-blur-sm shadow-sm hover:shadow-md">
                             <option value="es">🇪🇸 Español</option>
                             <option value="en">🇺🇸 English</option>
                             <option value="pt">🇧🇷 Português</option>
                         </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#854836]">
                             <i class="fas fa-chevron-down text-xs"></i>
                         </div>
-                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-2 text-gray-700">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-3 text-[#854836]">
                             <i class="fas fa-globe text-xs sm:text-sm"></i>
                         </div>
                     </div>
 
                     <!-- Botones de acción -->
-                    <div class="flex items-center space-x-2 sm:space-x-3">
-                        <div class="relative">
-                            <button id="generate-pdf-btn" class="bg-[#FFB22C] text-white font-medium py-1 sm:py-2 px-2 sm:px-4 rounded-md transition-all duration-200 flex items-center shadow-sm hover:bg-[#FFB22C]/90 text-xs sm:text-sm">
-                                <i class="fas fa-file-pdf mr-1 sm:mr-2"></i>
-                                <span data-translate="generate-pdf-btn" class="hidden sm:inline">Generar PDF</span>
-                                <span class="sm:hidden">PDF</span>
+                    <div class="flex items-center justify-center space-x-3 w-full sm:w-auto">
+                        <div class="relative group">
+                            <button id="generate-pdf-btn" class="bg-gradient-to-r from-[#FFB22C] to-[#FF9900] text-white font-medium py-2 px-4 rounded-full transition-all duration-300 flex items-center shadow-sm hover:shadow-md hover:translate-y-[-2px] active:translate-y-0 active:shadow-inner w-full relative overflow-hidden group">
+                                <i class="fas fa-file-pdf mr-2 relative z-10"></i>
+                                <span data-translate="generate-pdf-btn" class="relative z-10 text-nowrap">Generar PDF</span>
+                                <span class="absolute top-0 left-0 w-full h-0 bg-[#854836]/20 transition-all duration-300 group-hover:h-full rounded-full"></span>
                             </button>
                             <!-- Menú desplegable para opciones de PDF -->
-                            <div id="pdf-options" class="absolute right-0 mt-2 w-40 sm:w-48 bg-white/80 backdrop-blur-md rounded-md shadow-lg hidden z-10">
+                            <div id="pdf-options" class="absolute right-0 mt-2 w-full sm:w-48 bg-white/90 backdrop-blur-md rounded-lg shadow-lg hidden z-10 border border-gray-100 overflow-hidden transition-all duration-300">
                                 <div class="py-1">
-                                    <button id="download-pdf" class="w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-[#F7F7F7] hover:text-[#854836] flex items-center">
-                                        <i class="fas fa-download mr-2"></i> <span data-translate="download-pdf-btn">Descargar PDF</span>
+                                    <button id="download-pdf" class="w-full text-left px-4 py-3 text-xs sm:text-sm text-gray-700 hover:bg-gradient-to-r hover:from-[#FFB22C]/10 hover:to-[#854836]/10 hover:text-[#854836] flex items-center transition-all duration-200">
+                                        <i class="fas fa-download mr-2 text-[#FFB22C]"></i> <span data-translate="download-pdf-btn">Descargar PDF</span>
                                     </button>
-                                    <button id="print-pdf" class="w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-[#F7F7F7] hover:text-[#854836] flex items-center">
-                                        <i class="fas fa-print mr-2"></i> <span data-translate="print-pdf-btn">Imprimir</span>
+                                    <button id="print-pdf" class="w-full text-left px-4 py-3 text-xs sm:text-sm text-gray-700 hover:bg-gradient-to-r hover:from-[#FFB22C]/10 hover:to-[#854836]/10 hover:text-[#854836] flex items-center transition-all duration-200">
+                                        <i class="fas fa-print mr-2 text-[#FFB22C]"></i> <span data-translate="print-pdf-btn">Imprimir</span>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <button id="preview-btn" class="flex items-center px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium text-white bg-[#FFB22C] rounded-md hover:bg-[#FFB22C]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FFB22C] shadow-sm">
-                            <i class="fas fa-eye mr-1 sm:mr-2"></i>
-                            <span data-translate="preview-btn" class="hidden sm:inline">Vista Previa</span>
-                            <span class="sm:hidden">Vista</span>
+                        <button id="preview-btn" class="flex items-center px-4 py-2 text-xs sm:text-sm font-medium text-white bg-gradient-to-r from-[#854836] to-[#9A6B5D] rounded-full hover:shadow-md hover:translate-y-[-2px] active:translate-y-0 active:shadow-inner focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#854836] shadow-sm transition-all duration-300 w-full relative overflow-hidden group">
+                            <i class="fas fa-eye mr-2 relative z-10"></i>
+                            <span data-translate="preview-btn" class="relative z-10">Vista Previa</span>
+                            <span class="absolute top-0 left-0 w-full h-0 bg-[#FFB22C]/20 transition-all duration-300 group-hover:h-full rounded-full"></span>
                         </button>
                     </div>
                 </div>
@@ -148,7 +198,7 @@
     </header>
 
     <!-- Espaciador para compensar el header fijo -->
-    <div class="h-16 sm:h-20"></div>
+    <div class="h-24 sm:h-20"></div>
 
     <!-- App Introduction -->
     <div class="container mx-auto px-4 py-6">
@@ -358,15 +408,15 @@
                         <i class="fas fa-shopping-cart mr-2 text-[#FFB22C]"></i>
                         <span data-translate="items-title">Artículos</span>
                     </h3>
-                    <div class="overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-sm table-responsive-container">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead>
                                 <tr class="bg-[#F7F7F7]">
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="th-item">Artículo</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="th-quantity">Cantidad</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="th-rate">Precio unitario</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="th-total">Total</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="th-actions">Acciones</th>
+                                    <th class="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="th-item">Artículo</th>
+                                    <th class="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16 sm:w-auto" data-translate="th-quantity">Cant</th>
+                                    <th class="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20 sm:w-auto" data-translate="th-rate">Precio</th>
+                                    <th class="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20 sm:w-auto" data-translate="th-total">Total</th>
+                                    <th class="px-2 sm:px-6 py-2 sm:py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-12 sm:w-auto" data-translate="th-actions">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="items-body" class="bg-white divide-y divide-gray-200">
@@ -552,17 +602,17 @@
 
     <!-- Preview Modal -->
     <div id="preview-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-semibold text-[#854836]" data-translate="preview-title">Vista previa de la factura</h3>
-                    <button id="close-preview" class="text-gray-500 hover:text-gray-700">
+        <div class="bg-white rounded-lg shadow-xl w-[95%] sm:max-w-4xl mx-auto max-h-[90vh] overflow-y-auto mt-4 sm:mt-8">
+            <div class="p-3 sm:p-6">
+                <div class="flex justify-between items-center mb-2 sm:mb-4">
+                    <h3 class="text-lg sm:text-xl font-semibold text-[#854836]" data-translate="preview-title">Vista previa de la factura</h3>
+                    <button id="close-preview" class="text-gray-500 hover:text-gray-700 p-2">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <div id="pdf-preview" class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-                    <div class="p-4">
-                        <div class="overflow-auto max-h-[600px]">
+                    <div class="p-2 sm:p-4">
+                        <div class="overflow-auto max-h-[70vh] sm:max-h-[600px]">
                             <!-- PDF preview will be inserted here -->
                         </div>
                     </div>
@@ -573,27 +623,25 @@
 
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white p-6 rounded-lg shadow-xl">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FFB22C] mx-auto mb-4"></div>
-            <p class="text-gray-700" data-translate="generating-pdf">Generando PDF...</p>
+        <div class="bg-white p-4 sm:p-6 rounded-lg shadow-xl mx-4">
+            <div class="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[#FFB22C] mx-auto mb-3 sm:mb-4"></div>
+            <p class="text-gray-700 text-center text-sm sm:text-base" data-translate="generating-pdf">Generando PDF...</p>
         </div>
     </div>
 
     <!-- Modal de Importación -->
     <div id="import-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
-      <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <div class="mt-3 text-center">
-          <h3 class="text-lg leading-6 font-medium text-gray-900" data-translate="import-modal-title">Importar Datos</h3>
-          <div class="mt-2 px-7 py-3">
-            <textarea id="import-data" class="w-full h-32 p-2 border rounded-md" placeholder="Pega aquí tus datos..."></textarea>
+      <div class="relative top-20 mx-auto p-3 sm:p-5 border w-[90%] sm:w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-2 sm:mt-3 text-center">
+          <h3 class="text-base sm:text-lg leading-6 font-medium text-gray-900" data-translate="import-modal-title">Importar Datos</h3>
+          <div class="mt-2 px-3 sm:px-7 py-2 sm:py-3">
+            <textarea id="import-data" class="w-full h-28 sm:h-32 p-2 border rounded-md" placeholder="Pega aquí tus datos..."></textarea>
           </div>
-          <div class="items-center px-4 py-3">
-            <button id="cancel-import" class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
+          <div class="grid grid-cols-2 gap-2 px-3 sm:px-4 py-2 sm:py-3">
+            <button id="cancel-import" class="px-3 sm:px-4 py-2 bg-gray-500 text-white text-sm sm:text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
               <span data-translate="cancel-btn">Cancelar</span>
             </button>
-          </div>
-          <div class="items-center px-4 py-3">
-            <button id="confirm-import" class="px-4 py-2 bg-[#FFB22C] text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-[#FFB22C]/90 focus:outline-none focus:ring-2 focus:ring-[#FFB22C]">
+            <button id="confirm-import" class="px-3 sm:px-4 py-2 bg-[#FFB22C] text-white text-sm sm:text-base font-medium rounded-md w-full shadow-sm hover:bg-[#FFB22C]/90 focus:outline-none focus:ring-2 focus:ring-[#FFB22C]">
               <span data-translate="confirm-btn">Confirmar</span>
             </button>
           </div>
