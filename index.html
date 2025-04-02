@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title id="page-title">InvoiceGen Pro - Generador de Facturas Profesionales</title>
+    <meta name="description" content="Genera facturas profesionales en segundos con InvoiceGen Pro. Herramienta gratuita y fácil de usar para crear facturas en PDF.">
+    <meta name="keywords" content="generador de facturas, facturas PDF, facturas profesionales, facturación, facturas gratis">
+    <meta name="author" content="InvoiceGen Pro">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://invoicegenpro.com/">
+    <meta property="og:title" content="InvoiceGen Pro - Generador de Facturas Profesionales">
+    <meta property="og:description" content="Genera facturas profesionales en segundos con InvoiceGen Pro. Herramienta gratuita y fácil de usar para crear facturas en PDF.">
+    <meta property="og:image" content="opengraph.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://invoicegenpro.com/">
+    <meta property="twitter:title" content="InvoiceGen Pro - Generador de Facturas Profesionales">
+    <meta property="twitter:description" content="Genera facturas profesionales en segundos con InvoiceGen Pro. Herramienta gratuita y fácil de usar para crear facturas en PDF.">
+    <meta property="twitter:image" content="opengraph.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="translations.js" as="script">
+    <link rel="preload" href="utils.js" as="script">
+    <link rel="preload" href="app.js" as="script">
+    
+    <!-- Load styles first -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom styles -->
+    <style>
+        /* Custom styles that extend Tailwind */
+        .input-transition {
+            @apply transition-all duration-200 ease-in-out;
+        }
+        
+        .input-focus {
+            @apply focus:ring-2 focus:ring-white focus:border-white focus:outline-none;
+        }
+        
+        .btn-hover {
+            @apply hover:shadow-md hover:-translate-y-0.5 active:translate-y-0;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f7f7f7;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #854836;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6a3a2b;
+        }
+    </style>
+</head>
+<body class="bg-[#F7F7F7] min-h-screen">
+    <!-- Decorative elements -->
+    <div class="fixed top-0 right-0 w-1/3 h-1/3 bg-gradient-to-br from-[#FFB22C]/10 to-[#F7F7F7] rounded-bl-full -z-10"></div>
+    <div class="fixed bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-[#854836]/10 to-[#F7F7F7] rounded-tr-full -z-10"></div>
+    
+    <!-- App Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/30 border-b border-gray-200/30 shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-4">
+                <!-- Logo y título -->
+                <div class="flex items-center space-x-4">
+                    <img src="/logo-min.png" alt="InvoiceGen Pro Logo" class="h-16 w-auto">
+                    <h1 class="text-2xl font-bold text-black">InvoiceGen <span class="text-[#FFB22C] font-bold">Pro</span></h1>
+                </div>
+
+                <!-- Controles principales -->
+                <div class="flex items-center space-x-4">
+                    <!-- Selector de idioma -->
+                    <div class="relative">
+                        <select id="language-select" class="bg-transparent border border-gray-300 rounded-md pl-8 pr-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFB22C] focus:border-transparent appearance-none">
+                            <option value="es">🇪🇸 Español</option>
+                            <option value="en">🇺🇸 English</option>
+                            <option value="pt">🇧🇷 Português</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </div>
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-2 text-gray-700">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="flex items-center space-x-3">
+                        <div class="relative">
+                            <button id="generate-pdf-btn" class="bg-[#FFB22C] text-white font-medium py-2 px-4 rounded-md transition-all duration-200 flex items-center shadow-sm hover:bg-[#FFB22C]/90">
+                                <i class="fas fa-file-pdf mr-2"></i>
+                                <span data-translate="generate-pdf-btn">Generar PDF</span>
+                            </button>
+                            <!-- Menú desplegable para opciones de PDF -->
+                            <div id="pdf-options" class="absolute right-0 mt-2 w-48 bg-white/80 backdrop-blur-md rounded-md shadow-lg hidden z-10">
+                                <div class="py-1">
+                                    <button id="download-pdf" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#F7F7F7] hover:text-[#854836] flex items-center">
+                                        <i class="fas fa-download mr-2"></i> <span data-translate="download-pdf-btn">Descargar PDF</span>
+                                    </button>
+                                    <button id="print-pdf" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#F7F7F7] hover:text-[#854836] flex items-center">
+                                        <i class="fas fa-print mr-2"></i> <span data-translate="print-pdf-btn">Imprimir</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="preview-btn" class="flex items-center px-4 py-2 text-sm font-medium text-white bg-[#FFB22C] rounded-md hover:bg-[#FFB22C]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FFB22C] shadow-sm">
+                            <i class="fas fa-eye mr-2"></i>
+                            <span data-translate="preview-btn">Vista Previa</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Espaciador para compensar el header fijo -->
+    <div class="h-20"></div>
+
+    <!-- App Introduction -->
+    <div class="container mx-auto px-4 py-6">
+        <div class="bg-white rounded-lg p-6 mb-6 shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-[#854836] mb-3" data-translate="welcome-title">Bienvenido a InvoiceGen Pro</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto" data-translate="welcome-description">
+                    Genera facturas profesionales en segundos con nuestra herramienta gratuita. Ahora con tecnología de IA para procesar automáticamente tus datos.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-[#F7F7F7] p-5 rounded-lg transition-all duration-300 hover:shadow-md transform hover:-translate-y-1">
+                    <div class="bg-[#FFB22C] rounded-full w-10 h-10 flex items-center justify-center mb-3 shadow-sm">
+                        <i class="fas fa-magic text-white"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2 text-[#000000]" data-translate="feature1-title">Fácil de usar</h3>
+                    <p class="text-gray-600" data-translate="feature1-desc">Interfaz intuitiva diseñada para una experiencia fluida y profesional.</p>
+                </div>
+
+                <div class="bg-[#F7F7F7] p-5 rounded-lg transition-all duration-300 hover:shadow-md transform hover:-translate-y-1">
+                    <div class="bg-[#FFB22C] rounded-full w-10 h-10 flex items-center justify-center mb-3 shadow-sm">
+                        <i class="fas fa-robot text-white"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2 text-[#000000]" data-translate="feature2-title">Asistente IA</h3>
+                    <p class="text-gray-600" data-translate="feature2-desc">Procesa automáticamente datos de facturas con nuestra IA integrada.</p>
+                </div>
+
+                <div class="bg-[#F7F7F7] p-5 rounded-lg transition-all duration-300 hover:shadow-md transform hover:-translate-y-1">
+                    <div class="bg-[#FFB22C] rounded-full w-10 h-10 flex items-center justify-center mb-3 shadow-sm">
+                        <i class="fas fa-globe text-white"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2 text-[#000000]" data-translate="feature3-title">Multilenguaje</h3>
+                    <p class="text-gray-600" data-translate="feature3-desc">Disponible en español, inglés y portugués para mayor accesibilidad.</p>
+                </div>
+
+                <div class="bg-[#F7F7F7] p-5 rounded-lg transition-all duration-300 hover:shadow-md transform hover:-translate-y-1">
+                    <div class="bg-[#FFB22C] rounded-full w-10 h-10 flex items-center justify-center mb-3 shadow-sm">
+                        <i class="fas fa-file-pdf text-white"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2 text-[#000000]" data-translate="feature4-title">PDF Profesional</h3>
+                    <p class="text-gray-600" data-translate="feature4-desc">Genera PDFs de alta calidad listos para enviar a tus clientes.</p>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-[#854836] to-[#FFB22C] text-white p-6 rounded-lg mb-8">
+                <h2 class="text-2xl font-bold mb-3" data-translate="how-it-works">¿Cómo funciona?</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white/10 backdrop-blur-sm p-5 rounded-lg">
+                        <div class="bg-white rounded-full w-10 h-10 flex items-center justify-center mb-3 shadow-sm">
+                            <span class="font-bold text-[#854836]">1</span>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2" data-translate="step1-title">Completa los datos</h3>
+                        <p class="text-white/90" data-translate="step1-desc">Ingresa la información de tu empresa, cliente y los detalles de la factura, o usa nuestra IA para procesarlos automáticamente.</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm p-5 rounded-lg">
+                        <div class="bg-white rounded-full w-10 h-10 flex items-center justify-center mb-3 shadow-sm">
+                            <span class="font-bold text-[#854836]">2</span>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2" data-translate="step2-title">Agrega los artículos</h3>
+                        <p class="text-white/90" data-translate="step2-desc">Añade productos o servicios manualmente o importa datos en cualquier formato usando IA.</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm p-5 rounded-lg">
+                        <div class="bg-white rounded-full w-10 h-10 flex items-center justify-center mb-3 shadow-sm">
+                            <span class="font-bold text-[#854836]">3</span>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2" data-translate="step3-title">Genera tu PDF</h3>
+                        <p class="text-white/90" data-translate="step3-desc">Previsualiza y descarga tu factura profesional lista para enviar a tus clientes.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="bg-[#854836] rounded-full p-3">
+                        <i class="fas fa-robot text-2xl text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-[#854836]" data-translate="ai-feature-title">¡Nuevo! Procesamiento con IA</h3>
+                        <p class="text-gray-600" data-translate="ai-feature-desc">Prueba nuestra nueva función experimental de procesamiento de datos con IA.</p>
+                    </div>
+                </div>
+                <div class="pl-16">
+                    <ul class="list-disc text-gray-600 space-y-2">
+                        <li data-translate="ai-feature-point1">Importa datos de facturas en cualquier formato</li>
+                        <li data-translate="ai-feature-point2">Procesa automáticamente tablas y textos</li>
+                        <li data-translate="ai-feature-point3">Extrae información relevante con precisión</li>
+                        <li data-translate="ai-feature-point4">Ahorra tiempo en la entrada manual de datos</li>
+                    </ul>
+                    <div class="mt-4">
+                        <a href="#experimental-section" class="inline-flex items-center text-[#854836] hover:text-[#FFB22C] transition-colors duration-200">
+                            <span data-translate="learn-more">Aprende más</span>
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 pb-16">
+        <!-- Invoice Container -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 transition-all duration-300 hover:shadow-lg">
+            <!-- Invoice Header -->
+            <div class="bg-[#854836] p-6 relative overflow-hidden">
+                <div class="flex justify-between items-center relative z-10">
+                    <h2 class="text-2xl font-bold text-white" data-translate="invoice-title">Factura</h2>
+                    <div class="text-white text-right">
+                        <div class="text-sm opacity-80" data-translate="label-invoice-number">Factura #</div>
+                        <div class="font-bold text-xl" id="invoice-number-display">1</div>
+                    </div>
+                </div>
+                <!-- Decorative pattern for header -->
+                <div class="absolute top-0 left-0 w-full h-full opacity-10">
+                    <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E')"></div>
+                </div>
+            </div>
+
+            <!-- Invoice Body -->
+            <div class="p-6">
+                <!-- Company and Client Info -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <!-- Company Info -->
+                    <div class="transition-all duration-200 hover:bg-[#F7F7F7] p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold text-[#000000] mb-3 flex items-center">
+                            <i class="fas fa-building mr-2 text-[#FFB22C]"></i>
+                            <span data-translate="label-biller-name">Datos del emisor</span>
+                        </h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="biller-name" class="block text-sm font-medium text-gray-600">Nombre o empresa</label>
+                                <input type="text" id="biller-name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition" data-translate="biller-name-placeholder" placeholder="Tu nombre o empresa">
+                            </div>
+                            <div>
+                                <label for="biller-address" class="block text-sm font-medium text-gray-600" data-translate="label-biller-address">Dirección</label>
+                                <textarea id="biller-address" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition" data-translate="biller-address-placeholder" placeholder="Tu dirección completa"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Client Info -->
+                    <div class="transition-all duration-200 hover:bg-[#F7F7F7] p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold text-[#000000] mb-3 flex items-center">
+                            <i class="fas fa-user mr-2 text-[#FFB22C]"></i>
+                            <span data-translate="label-client-name">Datos del cliente</span>
+                        </h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="client-name" class="block text-sm font-medium text-gray-600">Nombre o empresa</label>
+                                <input type="text" id="client-name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition" data-translate="client-name-placeholder" placeholder="Nombre del cliente o empresa">
+                            </div>
+                            <div>
+                                <label for="client-address" class="block text-sm font-medium text-gray-600" data-translate="label-client-address">Dirección</label>
+                                <textarea id="client-address" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition" data-translate="client-address-placeholder" placeholder="Dirección completa del cliente"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invoice Details -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 bg-[#F7F7F7] p-4 rounded-lg">
+                    <div>
+                        <label for="invoice-date" class="block text-sm font-medium text-gray-600 flex items-center" data-translate="label-invoice-date">
+                            <i class="far fa-calendar-alt mr-1 text-[#854836]"></i>
+                            Fecha de emisión
+                        </label>
+                        <input type="date" id="invoice-date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition">
+                    </div>
+                    <div>
+                        <label for="payment-terms" class="block text-sm font-medium text-gray-600 flex items-center">
+                            <i class="fas fa-money-check-alt mr-1 text-[#854836]"></i>
+                            <span data-translate="label-payment-terms">Condiciones de pago</span>
+                        </label>
+                        <select id="payment-terms" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition">
+                            <option value="immediate" data-translate="option-immediate">Al contado</option>
+                            <option value="net15" data-translate="option-net15">15 días</option>
+                            <option value="net30" data-translate="option-net30">30 días</option>
+                            <option value="net60" data-translate="option-net60">60 días</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="due-date" class="block text-sm font-medium text-gray-600 flex items-center">
+                            <i class="far fa-calendar-check mr-1 text-[#854836]"></i>
+                            <span data-translate="label-due-date">Fecha de vencimiento</span>
+                        </label>
+                        <input type="date" id="due-date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition">
+                    </div>
+                    <div>
+                        <label for="invoice-number" class="block text-sm font-medium text-gray-600 flex items-center">
+                            <i class="fas fa-hashtag mr-1 text-[#854836]"></i>
+                            <span data-translate="label-invoice-number">Factura #</span>
+                        </label>
+                        <input type="text" id="invoice-number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition" value="1">
+                    </div>
+                    <div>
+                        <label for="purchase-order" class="block text-sm font-medium text-gray-600 flex items-center">
+                            <i class="fas fa-file-invoice mr-1 text-[#854836]"></i>
+                            <span data-translate="label-purchase-order">Orden de compra (opcional)</span>
+                        </label>
+                        <input type="text" id="purchase-order" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition">
+                    </div>
+                </div>
+
+                <!-- Invoice Items -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-[#000000] mb-3 flex items-center">
+                        <i class="fas fa-shopping-cart mr-2 text-[#FFB22C]"></i>
+                        <span data-translate="items-title">Artículos</span>
+                    </h3>
+                    <div class="overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead>
+                                <tr class="bg-[#F7F7F7]">
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="th-item">Artículo</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="th-quantity">Cantidad</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="th-rate">Precio unitario</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="th-total">Total</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="th-actions">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="items-body" class="bg-white divide-y divide-gray-200">
+                                <!-- Items will be added here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <button id="add-item-btn" class="mt-4 bg-[#FFB22C] text-white font-medium py-2 px-4 rounded-md transition-all duration-200 flex items-center shadow-sm btn-hover">
+                        <i class="fas fa-plus mr-2"></i>
+                        <span data-translate="add-item-btn">Agregar artículo</span>
+                    </button>
+                </div>
+
+                <!-- Notes and Terms -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <label for="notes" class="block text-sm font-medium text-gray-600 mb-2" data-translate="label-notes">Notas</label>
+                        <textarea id="notes" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition" rows="3" data-translate="notes-placeholder" placeholder="Observaciones adicionales"></textarea>
+                    </div>
+                    <div>
+                        <label for="terms" class="block text-sm font-medium text-gray-600 mb-2" data-translate="label-terms">Términos y condiciones</label>
+                        <textarea id="terms" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm input-focus input-transition" rows="3" data-translate="terms-placeholder" placeholder="Términos y condiciones de la factura"></textarea>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="bg-[#F7F7F7] p-6 rounded-lg shadow-sm">
+                    <h3 class="text-lg font-semibold text-[#854836] mb-6 flex items-center">
+                        <i class="fas fa-calculator mr-2"></i>
+                        <span data-translate="summary-title">Resumen</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Columna de inputs -->
+                        <div class="space-y-6">
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <label for="tax-rate" class="block text-sm font-medium text-gray-600 mb-2">
+                                    <i class="fas fa-percentage mr-1 text-[#854836]"></i>
+                                    Tasa de impuestos (%)
+                                </label>
+                                <input type="number" id="tax-rate" value="0" class="w-full rounded-md border-gray-300 shadow-sm input-focus input-transition">
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <label for="currency" class="block text-sm font-medium text-gray-600 mb-2 flex items-center">
+                                    <i class="fas fa-money-bill-wave mr-1 text-[#854836]"></i>
+                                    <span data-translate="label-currency">Moneda</span>
+                                </label>
+                                <select id="currency" class="w-full rounded-md border-gray-300 shadow-sm input-focus input-transition">
+                                    <option value="USD" selected>USD</option>
+                                    <option value="ARS">ARS</option>
+                                    <option value="BRL">BRL</option>
+                                    <option value="CLP">CLP</option>
+                                    <option value="COP">COP</option>
+                                    <option value="CRC">CRC</option>
+                                    <option value="DOP">DOP</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="GBP">GBP</option>
+                                    <option value="GTQ">GTQ</option>
+                                    <option value="HNL">HNL</option>
+                                    <option value="JPY">JPY</option>
+                                    <option value="MXN">MXN</option>
+                                    <option value="NIO">NIO</option>
+                                    <option value="PAB">PAB</option>
+                                    <option value="PEN">PEN</option>
+                                    <option value="PYG">PYG</option>
+                                    <option value="UYU">UYU</option>
+                                    <option value="VES">VES</option>
+                                </select>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <label for="amount-paid" class="block text-sm font-medium text-gray-600 mb-2">
+                                    <i class="fas fa-hand-holding-usd mr-1 text-[#854836]"></i>
+                                    <span data-translate="label-amount-paid">Cantidad pagada</span>
+                                </label>
+                                <input type="number" id="amount-paid" value="0" class="w-full rounded-md border-gray-300 shadow-sm input-focus input-transition">
+                            </div>
+                        </div>
+                        <!-- Columna de información -->
+                        <div class="space-y-4">
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <div class="flex justify-between items-center mb-4">
+                                    <span class="text-gray-600">
+                                        <i class="fas fa-receipt mr-1 text-[#854836]"></i>
+                                        <span data-translate="label-subtotal">Subtotal</span>
+                                    </span>
+                                    <span id="subtotal" class="font-medium">0.00 USD</span>
+                                </div>
+                                <div class="flex justify-between items-center mb-4">
+                                    <span class="text-gray-600">
+                                        <i class="fas fa-percentage mr-1 text-[#854836]"></i>
+                                        <span data-translate="label-tax">Impuesto</span>
+                                    </span>
+                                    <span id="tax" class="font-medium">0.00 USD</span>
+                                </div>
+                                <div class="flex justify-between items-center text-lg border-t pt-4">
+                                    <span class="font-medium">
+                                        <i class="fas fa-file-invoice-dollar mr-1 text-[#854836]"></i>
+                                        <span data-translate="label-total">Total</span>
+                                    </span>
+                                    <span id="total" class="font-bold text-[#854836]">0.00 USD</span>
+                                </div>
+                                <div class="flex justify-between items-center text-lg mt-4">
+                                    <span class="font-medium">
+                                        <i class="fas fa-balance-scale mr-1 text-[#854836]"></i>
+                                        <span data-translate="label-balance-due">Saldo adeudado</span>
+                                    </span>
+                                    <span id="balance-due" class="font-bold text-red-600">0.00 USD</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección Experimental -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6 mt-8">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900" data-translate="experimental-title">Funciones Experimentales</h3>
+                <span class="px-2 py-1 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full" data-translate="experimental-badge">En desarrollo</span>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-white p-4 rounded-lg border border-gray-200">
+                    <h4 class="text-sm font-medium text-gray-900 mb-2" data-translate="experimental-subtitle">Importación de Datos con IA</h4>
+                    <p class="text-sm text-gray-600 mb-4" data-translate="experimental-description">Esta función está en fase de desarrollo y puede no funcionar como se espera. Por favor, verifica los datos antes de generar la factura.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <button id="ia-process-btn" class="flex items-center px-4 py-2 text-sm font-medium text-white bg-[#854836] rounded-md hover:bg-[#854836]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#854836] shadow-sm">
+                                <i class="fas fa-robot mr-2"></i>
+                                <span data-translate="ia-process-btn">Procesar con IA</span>
+                            </button>
+                            <button id="import-data-btn" onclick="showImportModal()" class="flex items-center px-4 py-2 text-sm font-medium text-white bg-[#FFB22C] rounded-md hover:bg-[#FFB22C]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FFB22C] shadow-sm">
+                                <i class="fas fa-file-import mr-2"></i>
+                                <span data-translate="import-data-btn">Importar Datos</span>
+                            </button>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h5 class="text-sm font-medium text-gray-900 mb-2" data-translate="experimental-instructions">Instrucciones de uso:</h5>
+                            <div class="space-y-2">
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-200 text-gray-700 text-sm font-medium">1</span>
+                                    <p class="ml-2 text-sm text-gray-600" data-translate="experimental-step1">Copia los datos de la factura en cualquier formato, preferiblemente en formato tabla.</p>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-200 text-gray-700 text-sm font-medium">2</span>
+                                    <p class="ml-2 text-sm text-gray-600" data-translate="experimental-step2">Pega los datos en el botón "Procesar con IA" y espera el resultado.</p>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-200 text-gray-700 text-sm font-medium">3</span>
+                                    <p class="ml-2 text-sm text-gray-600" data-translate="experimental-step3">Copia los datos procesados con el botón mostrado.</p>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-200 text-gray-700 text-sm font-medium">4</span>
+                                    <p class="ml-2 text-sm text-gray-600" data-translate="experimental-step4">Inserta los datos en el botón "Importar Datos" y procesa.</p>
+                                </div>
+                            </div>
+                            <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                                <p class="text-sm text-yellow-800" data-translate="experimental-note">Nota: Esta función solo sirve para rellenar los artículos de la factura y realizará cálculos matemáticos para ajustar los campos. Por favor, verifica los datos antes de enviar la factura.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- App Footer -->
+        <footer class="mt-8 text-center text-gray-500 text-sm">
+            <p id="footer-text">Desarrollado con ❤️ por Ivan Iraldi</p>
+            <div class="flex justify-center space-x-4 mt-2">
+                <a href="https://github.com/ivaniraldi" target="_blank" class="text-[#854836] hover:text-[#FFB22C] transition-colors duration-200">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+                <a href="https://linkedin.com/in/ivaniraldi" target="_blank" class="text-[#854836] hover:text-[#FFB22C] transition-colors duration-200">
+                    <i class="fab fa-linkedin"></i> LinkedIn
+                </a>
+                <a href="https://iraldidev.vercel.app" target="_blank" class="text-[#854836] hover:text-[#FFB22C] transition-colors duration-200">
+                    <i class="fa-solid fa-user"></i> Portfolio
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold text-[#854836]" data-translate="preview-title">Vista previa de la factura</h3>
+                    <button id="close-preview" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="pdf-preview" class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                    <div class="p-4">
+                        <div class="overflow-auto max-h-[600px]">
+                            <!-- PDF preview will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FFB22C] mx-auto mb-4"></div>
+            <p class="text-gray-700" data-translate="generating-pdf">Generando PDF...</p>
+        </div>
+    </div>
+
+    <!-- Modal de Importación -->
+    <div id="import-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+      <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+          <h3 class="text-lg leading-6 font-medium text-gray-900" data-translate="import-modal-title">Importar Datos</h3>
+          <div class="mt-2 px-7 py-3">
+            <textarea id="import-data" class="w-full h-32 p-2 border rounded-md" placeholder="Pega aquí tus datos..."></textarea>
+          </div>
+          <div class="items-center px-4 py-3">
+            <button id="cancel-import" class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
+              <span data-translate="cancel-btn">Cancelar</span>
+            </button>
+          </div>
+          <div class="items-center px-4 py-3">
+            <button id="confirm-import" class="px-4 py-2 bg-[#FFB22C] text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-[#FFB22C]/90 focus:outline-none focus:ring-2 focus:ring-[#FFB22C]">
+              <span data-translate="confirm-btn">Confirmar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Load scripts at the end of body -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="translations.js"></script>
+    <script src="utils.js"></script>
+    <script src="app.js"></script>
+    <script src="pdfGenerator.js"></script>
+    <script type="module" src="iaDataGenerator.js"></script>
+</body>
+</html>
+
